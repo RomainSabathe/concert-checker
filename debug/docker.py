@@ -59,6 +59,8 @@ def run_container() -> int:
             "-it",  # Changed to -it for interactive + TTY
             "-v",
             f"{cwd}:/code:z",
+            "-v",
+            "$HOME/.logfire:/root/.logfire:z",
             "-e",
             f"OPENAI_API_KEY={openai_key}",
             IMAGE_NAME,

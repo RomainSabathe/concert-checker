@@ -503,16 +503,18 @@ source = { virtual = "." }
 dependencies = [
     { name = "crawl4ai" },
     { name = "ipdb" },
+    { name = "logfire" },
     { name = "pydantic-ai" },
-    { name = "pydantic-ai-slim", extra = ["duckduckgo"] },
+    { name = "pydantic-ai-slim", extra = ["duckduckgo", "logfire"] },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "crawl4ai", specifier = ">=0.8.0" },
     { name = "ipdb", specifier = ">=0.13.13" },
+    { name = "logfire", specifier = ">=2.8.1" },
     { name = "pydantic-ai", specifier = ">=1.57.0" },
-    { name = "pydantic-ai-slim", extras = ["duckduckgo"], specifier = ">=1.57.0" },
+    { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire"], specifier = ">=1.57.0" },
 ]
 
 [[package]]
