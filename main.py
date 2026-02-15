@@ -20,6 +20,7 @@ def main():
     from sources.artist_website import ArtistWebsiteSource
 
     artist_website_source = ArtistWebsiteSource(artist_name)
+    artist_website_source.resolve(db)
     shows = artist_website_source.fetch_shows()
 
     return

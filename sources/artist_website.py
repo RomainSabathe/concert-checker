@@ -5,9 +5,9 @@ from typing import override
 
 from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
+from sqlalchemy.orm import Session
 
 from app.crud import get_or_create_artist, update_artist
-from app.database import SessionLocal
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
 from sources import ShowDetails, Source
@@ -24,11 +24,36 @@ class ArtistWebsiteSource(Source):
         super().__init__(artist_name, *args, **kwargs)
 
         self._base_url: str | None = None
-        self.show_extractor_agent = Agent(
+
+    @property
+    @override
+    def base_url(self) -> str:
+        if self._base_url is None:
+            raise ValueError("Base URL not resolved yet. Please call resolve() first.")
+        return self._base_url
+
+    @override
+    def resolve(self, db: Session):
+        # TODO: add docstring
+        # Populating the DB with the website base url
+        artist = get_or_create_artist(db, ArtistCreate(name=self.artist_name))
+        if (url := artist.website_base_url) is None:
+            url = find_artist_website(self.artist_name)
+            _ = update_artist(db, ArtistUpdate(id=artist.id, website_base_url=url))
+            # TODO: encapsulate db logic in try/except?
+
+        self._base_url = url
+
+    @override
+    def fetch_shows(self) -> list[ShowDetails]:
+        # TODO: bypassing the actual show extraction while we're debugging
+        return []
+
+        show_extractor_agent = Agent(
             LLM_MODEL_NAME,
             system_prompt=f"""
                 You are a helpful assistant that navigates the official website of the
-                artist "{artist_name}" and extracts the list of show dates. Your task is
+                artist "{self.artist_name}" and extracts the list of show dates. Your task is
                 to to extract the list of show dates from this artist. Show dates are
                 often located either on the front page or in dedicated pages (for
                 instance named: "Live", "Shows", "Tour", etc.).
@@ -48,22 +73,9 @@ class ArtistWebsiteSource(Source):
             tools=[fetch_web_content],
             output_type=list[ShowDetails],
         )
-
-    @property
-    @override
-    def base_url(self) -> str:
-        if self._base_url is None:
-            self._base_url = find_artist_website(self.artist_name)
-        return self._base_url
-
-    @override
-    def fetch_shows(self) -> list[ShowDetails]:
-        # TODO: bypassing the actual show extraction while we're debugging
-        return []
-
         # TODO: show fetch_shows add to the db? probably not, it should send upwards,
         # to a function that can do results parsing and normalization.
-        return self.show_extractor_agent.run_sync(self.artist_name).output
+        return show_extractor_agent.run_sync(self.artist_name).output
 
 
 def find_artist_website(artist_name: str) -> str:
@@ -75,17 +87,6 @@ def find_artist_website(artist_name: str) -> str:
     Returns:
         ArtistWebsite: An object containing the URL of the artist's official website.
     """
-    # 2 stage process: 1. retrieve from db (if available), 2. use agent
-
-    # AI? Should `db` be passed as argument? Is this a code smell?
-    db = SessionLocal()
-
-    # 1. Retrieve from db (if available)
-    artist = get_or_create_artist(db, ArtistCreate(name=artist_name))
-    if artist.website_base_url is not None:
-        return artist.website_base_url
-
-    # 2. Use agent to find the website
     agent = Agent(
         LLM_MODEL_NAME,
         system_prompt="""
@@ -102,10 +103,4 @@ def find_artist_website(artist_name: str) -> str:
         # TODO: add an exception in case the url is not found (None)
         pass
     url = response.output.url
-
-    # Updating the db
-    _ = update_artist(db, ArtistUpdate(id=artist.id, website_base_url=url))
-
-    db.commit()
-    # TODO: encapsulate db logic in try/except?
     return url

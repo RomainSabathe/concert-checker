@@ -4,6 +4,7 @@ from datetime import date, datetime
 
 from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
+from sqlalchemy.orm import Session
 
 from common.constants import LLM_MODEL_NAME
 from tools.web import fetch_web_content
@@ -27,6 +28,11 @@ class Source(ABC):
     @property
     @abstractmethod
     def base_url(self) -> str:
+        pass
+
+    @abstractmethod
+    def resolve(self, db: Session):
+        """Resolve dependencies for the source (base url, etc.)"""
         pass
 
     @abstractmethod
