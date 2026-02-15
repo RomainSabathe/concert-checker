@@ -10,4 +10,5 @@ dependencies = [
     "logfire>=2.8.1",
     "pydantic-ai>=1.57.0",
     "pydantic-ai-slim[duckduckgo,logfire]>=1.57.0",
+    "sqlalchemy>=2.0.46",
 ]
