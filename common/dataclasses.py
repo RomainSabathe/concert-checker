@@ -10,6 +10,8 @@ class Url:
     url: str | None
 
 
+# AI? Should this be a Pydantic base class? So that I could to .dump()?
+# Would be useful in e.g. `add_shows_to_db`.
 @dataclass
 class ShowDetails:
     # TODO: certain parts of the code talk about "Show", other talk about "Concert". We
@@ -20,3 +22,5 @@ class ShowDetails:
     country: str | None
     country_code: str | None  # ISO 3166-1 alpha-2 country code
     venue: str | None
+
+    source_url: str  # URL of the page where the show details were found

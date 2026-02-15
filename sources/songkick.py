@@ -45,6 +45,9 @@ class SongkickSource(Source):
                 The artist's Songkick page is {self.base_url}. You can fetch the
                 content of any page of the website using the provided tool.
 
+                The `source_url` field of the output should be the URL of the page where
+                you found the show details.
+
                 The current date is {datetime.now().date}. Songkick organizes the page
                 into "Upcoming concerts" and "Past concerts".
 

@@ -18,6 +18,7 @@ Base.metadata.create_all(bind=engine)
 
 def main():
     db = SessionLocal()
+    artist_name = "Melody's Echo Chamber"
     artist_name = "Men I Trust"
 
     # TODO: add logging
@@ -33,9 +34,6 @@ def main():
     return
 
 
-# AI? Should this live in `crud.py`?
-# AI? Should the `ShowDetails` contain the `artist_name`? (to avoid having to pass the
-# `artist_name` everywhere)
 def add_shows_to_db(db: Session, shows: list[ShowDetails], artist_name: str):
     if len(shows) == 0:
         return
@@ -56,12 +54,20 @@ def add_shows_to_db(db: Session, shows: list[ShowDetails], artist_name: str):
             venue_id = venue.id
 
         if not isinstance(show_details.date, date):
-            raise NotImplementedError("Need to implement the date parsing logic")
+            logfire.warning("Need to implement the date parsing logic")
+            continue
+            # raise NotImplementedError("Need to implement the date parsing logic")
 
         _ = get_or_create_concert(
             db,
             ConcertCreate(
-                date=show_details.date, artist_id=artist.id, venue_id=venue_id
+                date=show_details.date,
+                artist_id=artist.id,
+                venue_id=venue_id,
+                source_url=show_details.source_url,
+                city=show_details.city,
+                country=show_details.country,
+                country_code=show_details.country_code,
             ),
         )
 

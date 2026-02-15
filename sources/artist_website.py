@@ -57,6 +57,8 @@ class ArtistWebsiteSource(Source):
                 is "December 15" and the current date is "June 1, 2024", then the show date
                 should be "December 15, 2024" since it is in the future or that happened in the
                 current year.
+                The `source_url` field of the output should be the URL of the page where
+                you found the show details.
 
                 If you cannot find any show date, return an empty list.
                 """,

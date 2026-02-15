@@ -35,6 +35,9 @@ class Concert(Base):
     city: Mapped[str] = mapped_column()
     country: Mapped[str | None] = mapped_column()
     country_code: Mapped[str | None] = mapped_column()
+    source_url: Mapped[str] = (
+        mapped_column()
+    )  # URL of the page where the show details were found
 
     artist_id: Mapped[int] = mapped_column(ForeignKey("artists.id"))
     venue_id: Mapped[int | None] = mapped_column(ForeignKey("venues.id"))
