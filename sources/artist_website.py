@@ -11,7 +11,7 @@ from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
 from common.dataclasses import ShowDetails, Url
 from sources import Source
-from tools.web import fetch_web_content
+from tools.web import fetch_web_content, page_hash_has_changed
 
 
 class ArtistWebsiteSource(Source):
@@ -42,6 +42,9 @@ class ArtistWebsiteSource(Source):
     def fetch_shows(self) -> list[ShowDetails]:
         show_extractor_agent = Agent(
             LLM_MODEL_NAME,
+            # TODO: I might actually decide to _not_ extract a year if the year is not
+            # available, and actually leave this logic for deterministic
+            # post-processing.
             system_prompt=f"""
                 You are a helpful assistant that navigates the official website of the
                 artist "{self.artist_name}" and extracts the list of show dates. Your task is
@@ -52,18 +55,30 @@ class ArtistWebsiteSource(Source):
                 The artist's official website is {self.base_url}. You can fetch the
                 content of any page of the website using the provided tool.
 
-                The current date is {datetime.now().date}. If show dates are missing the year
-                information, deduce it based on the current date. For instance, if the show date
-                is "December 15" and the current date is "June 1, 2024", then the show date
-                should be "December 15, 2024" since it is in the future or that happened in the
-                current year.
+                Before fetching content, you will use the `page_hash_has_changed` tool
+                to check if the content of the page has changed since the last time it
+                was fetched. If the content has not changed, you can skip fetching the
+                content and parsing it. If you don't have any new page to parse, you can
+                return an empty list.
+
                 The `source_url` field of the output should be the URL of the page where
                 you found the show details.
+
+                The current date is {datetime.now().date}. Certain artist websites
+                unfortunately do not include a year in the show dates. And considering
+                that the website might not be up to date, the show date could actually
+                refer to a show in the past. To clarify, you will:
+                1. Check the content of the page to notice any temporal indication. E.g.
+                "2025 Tour". Use this to deduce an appropriate year for the show.
+                2. Otherwise, you will err on the side of caution, and consider that the
+                shows are planned in the future. For instance, if the show date
+                is "April 23rd" and the current date is "June 1, 2024", then the show date
+                should be "April 23, 2025" (i.e. the next year).
 
                 If you cannot find any show date, return an empty list.
                 """,
             # TODO: add a hash of the website so we only parse when updates are detected
-            tools=[fetch_web_content],
+            tools=[fetch_web_content, page_hash_has_changed],
             output_type=list[ShowDetails],
         )
         return show_extractor_agent.run_sync(self.artist_name).output

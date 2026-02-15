@@ -43,3 +43,12 @@ class Concert(Base):
     venue_id: Mapped[int | None] = mapped_column(ForeignKey("venues.id"))
     artist: Mapped["Artist"] = relationship(back_populates="concerts")
     venue: Mapped["Venue | None"] = relationship()
+
+
+class PageCache(Base):
+    __tablename__ = "page_caches"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    url: Mapped[str] = mapped_column(unique=True)
+    content_hash: Mapped[str | None] = mapped_column()
+    last_fetched_at: Mapped[datetime.datetime | None] = mapped_column()
+    last_updated_at: Mapped[datetime.datetime | None] = mapped_column()

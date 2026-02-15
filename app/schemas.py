@@ -38,3 +38,12 @@ class ConcertCreate(BaseModel):
     country: str | None = None
     country_code: str | None = None  # ISO 3166-1 alpha-2 country code
     venue_id: int | None = None
+
+
+class PageCacheGet(BaseModel):
+    url: str
+
+
+class PageCacheCreate(BaseModel):
+    url: str
+    content_hash: str | None = None

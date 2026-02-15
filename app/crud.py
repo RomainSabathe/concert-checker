@@ -1,7 +1,13 @@
 from sqlalchemy.orm import Session
 
-from app.models import Artist, Concert, Venue
-from app.schemas import ArtistCreate, ArtistUpdate, ConcertCreate, VenueCreate
+from app.models import Artist, Concert, PageCache, Venue
+from app.schemas import (
+    ArtistCreate,
+    ArtistUpdate,
+    ConcertCreate,
+    PageCacheCreate,
+    VenueCreate,
+)
 
 # TODO: add logging.
 
@@ -85,3 +91,15 @@ def get_or_create_concert(db: Session, concert_data: ConcertCreate) -> Concert:
         db.flush()
 
     return concert
+
+
+def get_or_create_page_cache(
+    db: Session, page_cache_data: PageCacheCreate
+) -> PageCache:
+    page_cache = db.query(PageCache).filter_by(url=page_cache_data.url).first()
+    if not page_cache:
+        page_cache = PageCache(**page_cache_data.model_dump())
+        db.add(page_cache)
+        db.flush()
+
+    return page_cache
