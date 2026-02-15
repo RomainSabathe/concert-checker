@@ -1,11 +1,13 @@
 from datetime import date
 
 import logfire
+from sqlalchemy.orm import Session
 
-from agents.artist_website_finder import ArtistWebsiteShowExtractorAgent
 from app.crud import get_or_create_artist, get_or_create_concert, get_or_create_venue
 from app.database import Base, SessionLocal, engine
 from app.schemas import ArtistCreate, ConcertCreate, VenueCreate
+from common.dataclasses import ShowDetails
+from sources.artist_website import ArtistWebsiteSource
 from sources.songkick import SongkickSource
 
 logfire.configure()
@@ -19,59 +21,49 @@ def main():
     artist_name = "Men I Trust"
 
     # TODO: add logging
-    # for source_class in [ArtistWebsiteSource, SongkickSource]:
-    for source_class in [SongkickSource]:
+    # TODO: switch to async
+    for source_class in [ArtistWebsiteSource, SongkickSource]:
         source = source_class(artist_name)
         source.resolve(db)
         shows = source.fetch_shows()
-        __import__("ipdb").set_trace()
+        add_shows_to_db(db, shows, artist_name)
 
     db.commit()
 
     return
 
-    artist = get_or_create_artist(db, ArtistCreate(name=artist_name))
 
-    # Extracting shows for the artist
-    out = ArtistWebsiteShowExtractorAgent.run_sync("Men I Trust")
-
-    if len(out.output) == 0:
-        logfire.warning(f"No shows found for artist '{artist_name}'.")
+# AI? Should this live in `crud.py`?
+# AI? Should the `ShowDetails` contain the `artist_name`? (to avoid having to pass the
+# `artist_name` everywhere)
+def add_shows_to_db(db: Session, shows: list[ShowDetails], artist_name: str):
+    if len(shows) == 0:
         return
 
-    # Adding the shows to the database
-    try:
-        for show_details in out.output:
-            venue_id = None
-            if show_details.venue:
-                venue = get_or_create_venue(
-                    db,
-                    VenueCreate(
-                        name=show_details.venue,
-                        city=show_details.city,
-                        country=show_details.country,
-                        country_code=show_details.country_code,
-                    ),
-                )
-                venue_id = venue.id
-
-            if not isinstance(show_details.date, date):
-                raise NotImplementedError("Need to implement the date parsing logic")
-
-            # Actually add the concert to the db
-            _ = get_or_create_concert(
+    artist = get_or_create_artist(db, ArtistCreate(name=artist_name))
+    for show_details in shows:
+        venue_id = None
+        if show_details.venue:
+            venue = get_or_create_venue(
                 db,
-                ConcertCreate(
-                    date=show_details.date, artist_id=artist.id, venue_id=venue_id
+                VenueCreate(
+                    name=show_details.venue,
+                    city=show_details.city,
+                    country=show_details.country,
+                    country_code=show_details.country_code,
                 ),
             )
+            venue_id = venue.id
 
-        db.commit()
+        if not isinstance(show_details.date, date):
+            raise NotImplementedError("Need to implement the date parsing logic")
 
-    finally:
-        db.close()
-
-    __import__("ipdb").set_trace()
+        _ = get_or_create_concert(
+            db,
+            ConcertCreate(
+                date=show_details.date, artist_id=artist.id, venue_id=venue_id
+            ),
+        )
 
 
 if __name__ == "__main__":

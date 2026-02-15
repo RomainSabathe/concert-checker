@@ -16,6 +16,7 @@ class ShowDetails:
     # should standardize.
     date: datetime | date | str
     city: str
+    state: str | None
     country: str | None
     country_code: str | None  # ISO 3166-1 alpha-2 country code
     venue: str | None

@@ -40,9 +40,6 @@ class ArtistWebsiteSource(Source):
 
     @override
     def fetch_shows(self) -> list[ShowDetails]:
-        # TODO: bypassing the actual show extraction while we're debugging
-        return []
-
         show_extractor_agent = Agent(
             LLM_MODEL_NAME,
             system_prompt=f"""
