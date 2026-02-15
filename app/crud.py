@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models import Artist, Concert, Venue
-from app.schemas import ArtistCreate, ConcertCreate, VenueCreate
+from app.schemas import ArtistCreate, ArtistUpdate, ConcertCreate, VenueCreate
 
 # TODO: add logging.
 
@@ -22,6 +22,20 @@ def get_or_create_artist(db: Session, artist_data: ArtistCreate) -> Artist:
         artist = Artist(**artist_data.model_dump())
         db.add(artist)
         db.flush()
+
+    return artist
+
+
+def update_artist(db: Session, artist_data: ArtistUpdate) -> Artist:
+    artist = db.query(Artist).filter_by(id=artist_data.id).first()
+    if not artist:
+        # TODO: add an exception in case the artist is not found.
+        pass
+
+    for key, value in artist_data.model_dump(exclude={"id"}).items():
+        if value is None:
+            continue
+        artist.__setattr__(key, value)
 
     return artist
 

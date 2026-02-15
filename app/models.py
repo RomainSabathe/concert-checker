@@ -11,6 +11,7 @@ class Artist(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
     concerts: Mapped[list["Concert"]] = relationship(back_populates="artist")
+    website_base_url: Mapped[str | None] = mapped_column()
 
 
 class Venue(Base):

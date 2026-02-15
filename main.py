@@ -17,6 +17,13 @@ def main():
     db = SessionLocal()
     artist_name = "Men I Trust"
 
+    from sources.artist_website import ArtistWebsiteSource
+
+    artist_website_source = ArtistWebsiteSource(artist_name)
+    shows = artist_website_source.fetch_shows()
+
+    return
+
     artist = get_or_create_artist(db, ArtistCreate(name=artist_name))
 
     # Extracting shows for the artist
