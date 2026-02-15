@@ -15,6 +15,8 @@ class ArtistWebsite:
 
 @dataclass
 class ShowDetails:
+    # TODO: certain parts of the code talk about "Show", other talk about "Concert". We
+    # should standardize.
     date: datetime | date | str
     city: str
     country: str | None
@@ -31,6 +33,7 @@ def find_artist_website(artist_name: str) -> str:
     Returns:
         ArtistWebsite: An object containing the URL of the artist's official website.
     """
+    # TODO: add the website to the db.
     if artist_name == "Men I Trust":
         return "https://menitrust.com/"
 
@@ -69,6 +72,7 @@ ArtistWebsiteShowExtractorAgent = Agent(
 
         If you cannot find any show date, return an empty list.
         """,
+    # TODO: add a hash of the website so we only parse when updates are detected
     tools=[find_artist_website, fetch_web_content],
     output_type=list[ShowDetails],
 )

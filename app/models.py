@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -25,7 +25,9 @@ class Venue(Base):
 class Concert(Base):
     __tablename__ = "concerts"
     id: Mapped[int] = mapped_column(primary_key=True)
-    date: Mapped[datetime] = mapped_column()
+    # TODO: have `date` and `time` as separate fields to avoid situation where we
+    # compare a datetime with a date.
+    date: Mapped[datetime.date] = mapped_column()
     artist_id: Mapped[int] = mapped_column(ForeignKey("artists.id"))
     venue_id: Mapped[int | None] = mapped_column(ForeignKey("venues.id"))
     artist: Mapped["Artist"] = relationship(back_populates="concerts")

@@ -10,6 +10,8 @@ async def fetch_web_content(url: str) -> str:
     Returns:
         The page content converted to markdown format.
     """
+    # TODO: add an alert/log in case we can't parse the content (output of the tool is
+    # None)
     async with AsyncWebCrawler() as crawler:
         result = await crawler.arun(url)
         return result.markdown
