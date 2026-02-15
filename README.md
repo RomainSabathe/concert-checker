@@ -7,3 +7,4 @@ To do:
 - Image parsing on artist's webpage
 - Skill/reflection traces when parsing certain common websites (e.g. songkick,
   bandsintown)
+- Add source for when an event has been added? (e.g. "added from songkick")

@@ -47,7 +47,7 @@ class ArtistWebsiteSource(Source):
                 artist "{self.artist_name}" and extracts the list of show dates. Your task is
                 to to extract the list of show dates from this artist. Show dates are
                 often located either on the front page or in dedicated pages (for
-                instance named: "Live", "Shows", "Tour", etc.).
+                instance named: "Live", "Shows", "Tour", "Concerts", etc.).
 
                 The artist's official website is {self.base_url}. You can fetch the
                 content of any page of the website using the provided tool.

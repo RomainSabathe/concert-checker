@@ -33,4 +33,7 @@ class VenueCreate(BaseModel):
 class ConcertCreate(BaseModel):
     date: date
     artist_id: int
+    city: str
+    country: str | None = None
+    country_code: str | None = None  # ISO 3166-1 alpha-2 country code
     venue_id: int | None = None

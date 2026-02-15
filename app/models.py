@@ -32,6 +32,10 @@ class Concert(Base):
     # TODO: have `date` and `time` as separate fields to avoid situation where we
     # compare a datetime with a date.
     date: Mapped[datetime.date] = mapped_column()
+    city: Mapped[str] = mapped_column()
+    country: Mapped[str | None] = mapped_column()
+    country_code: Mapped[str | None] = mapped_column()
+
     artist_id: Mapped[int] = mapped_column(ForeignKey("artists.id"))
     venue_id: Mapped[int | None] = mapped_column(ForeignKey("venues.id"))
     artist: Mapped["Artist"] = relationship(back_populates="concerts")
