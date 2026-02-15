@@ -1,5 +1,4 @@
 import datetime
-from dataclasses import dataclass
 from datetime import datetime
 from typing import override
 
@@ -10,13 +9,9 @@ from sqlalchemy.orm import Session
 from app.crud import get_or_create_artist, update_artist
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
-from sources import ShowDetails, Source
+from common.dataclasses import ShowDetails, Url
+from sources import Source
 from tools.web import fetch_web_content
-
-
-@dataclass
-class ArtistWebsite:
-    url: str | None
 
 
 class ArtistWebsiteSource(Source):
@@ -72,8 +67,6 @@ class ArtistWebsiteSource(Source):
             tools=[fetch_web_content],
             output_type=list[ShowDetails],
         )
-        # TODO: show fetch_shows add to the db? probably not, it should send upwards,
-        # to a function that can do results parsing and normalization.
         return show_extractor_agent.run_sync(self.artist_name).output
 
 
@@ -93,7 +86,7 @@ def find_artist_website(artist_name: str) -> str:
         given the name of an artist, you will search for their official website and return
         the URL. If you cannot find the website, return null.""",
         tools=[duckduckgo_search_tool()],
-        output_type=ArtistWebsite,
+        output_type=Url,
     )
     response = agent.run_sync(
         f"What is the official website of the artist '{artist_name}'?"

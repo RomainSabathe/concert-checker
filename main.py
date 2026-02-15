@@ -6,6 +6,7 @@ from agents.artist_website_finder import ArtistWebsiteShowExtractorAgent
 from app.crud import get_or_create_artist, get_or_create_concert, get_or_create_venue
 from app.database import Base, SessionLocal, engine
 from app.schemas import ArtistCreate, ConcertCreate, VenueCreate
+from sources.songkick import SongkickSource
 
 logfire.configure()
 logfire.instrument_pydantic_ai()
@@ -17,11 +18,15 @@ def main():
     db = SessionLocal()
     artist_name = "Men I Trust"
 
-    from sources.artist_website import ArtistWebsiteSource
+    # TODO: add logging
+    # for source_class in [ArtistWebsiteSource, SongkickSource]:
+    for source_class in [SongkickSource]:
+        source = source_class(artist_name)
+        source.resolve(db)
+        shows = source.fetch_shows()
+        __import__("ipdb").set_trace()
 
-    artist_website_source = ArtistWebsiteSource(artist_name)
-    artist_website_source.resolve(db)
-    shows = artist_website_source.fetch_shows()
+    db.commit()
 
     return
 
