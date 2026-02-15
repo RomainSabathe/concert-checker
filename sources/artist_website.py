@@ -26,7 +26,6 @@ class ArtistWebsiteSource(Source):
         self._base_url: str | None = None
 
     @property
-    @override
     def base_url(self) -> str:
         if self._base_url is None:
             raise ValueError("Base URL not resolved yet. Please call resolve() first.")

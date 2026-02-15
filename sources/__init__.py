@@ -2,12 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import date, datetime
 
-from pydantic_ai import Agent
-from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from sqlalchemy.orm import Session
-
-from common.constants import LLM_MODEL_NAME
-from tools.web import fetch_web_content
 
 
 @dataclass
@@ -24,11 +19,6 @@ class ShowDetails:
 class Source(ABC):
     def __init__(self, artist_name: str):
         self.artist_name: str = artist_name
-
-    @property
-    @abstractmethod
-    def base_url(self) -> str:
-        pass
 
     @abstractmethod
     def resolve(self, db: Session):

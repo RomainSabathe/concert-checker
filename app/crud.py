@@ -29,13 +29,12 @@ def get_or_create_artist(db: Session, artist_data: ArtistCreate) -> Artist:
 def update_artist(db: Session, artist_data: ArtistUpdate) -> Artist:
     artist = db.query(Artist).filter_by(id=artist_data.id).first()
     if not artist:
-        # TODO: add an exception in case the artist is not found.
-        pass
+        raise ValueError(f"Artist with id {artist_data.id} not found.")
 
     for key, value in artist_data.model_dump(exclude={"id"}).items():
         if value is None:
             continue
-        artist.__setattr__(key, value)
+        setattr(artist, key, value)
 
     return artist
 
