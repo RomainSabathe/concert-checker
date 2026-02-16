@@ -2,9 +2,11 @@ import hashlib
 from datetime import datetime
 
 from crawl4ai import AsyncWebCrawler
+from pydantic_ai import RunContext
 
 from app.crud import get_or_create_page_cache
 from app.schemas import PageCacheCreate
+from common.dataclasses import AgentDependency
 
 
 async def fetch_web_content(url: str) -> str:
@@ -23,7 +25,7 @@ async def fetch_web_content(url: str) -> str:
         return result.markdown
 
 
-async def page_hash_has_changed(ctx: RunContext[Session], url: str) -> bool:
+async def page_hash_has_changed(ctx: RunContext[AgentDependency], url: str) -> bool:
     """Check if the hash of the content of a web page has changed since the last check.
 
     This function fetches the current content of the web page, computes its hash, and
@@ -41,7 +43,7 @@ async def page_hash_has_changed(ctx: RunContext[Session], url: str) -> bool:
         True if the hash has changed, False otherwise.
     """
     # TODO: continue with the run context..
-    db = ctx.deps
+    db = ctx.deps.db
     current_time = datetime.today()
 
     # Querying the DB

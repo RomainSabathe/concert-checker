@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 
+from sqlalchemy.orm import Session
+
 # AI? Is this `dataclasses` file really the best place where to put these "I/O"
 # dataclasses for agents?
 
@@ -24,3 +26,8 @@ class ShowDetails:
     venue: str | None
 
     source_url: str  # URL of the page where the show details were found
+
+
+@dataclass
+class AgentDependency:
+    db: Session

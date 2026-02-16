@@ -8,7 +8,6 @@ from app.database import Base, SessionLocal, engine
 from app.schemas import ArtistCreate, ConcertCreate, VenueCreate
 from common.dataclasses import ShowDetails
 from sources.artist_website import ArtistWebsiteSource
-from sources.songkick import SongkickSource
 
 logfire.configure()
 logfire.instrument_pydantic_ai()
@@ -23,10 +22,11 @@ def main():
 
     # TODO: add logging
     # TODO: switch to async
-    for source_class in [ArtistWebsiteSource, SongkickSource]:
+    # for source_class in [ArtistWebsiteSource, SongkickSource]:
+    for source_class in [ArtistWebsiteSource]:
         source = source_class(artist_name)
         source.resolve(db)
-        shows = source.fetch_shows()
+        shows = source.fetch_shows(db)
         add_shows_to_db(db, shows, artist_name)
 
     db.commit()

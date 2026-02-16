@@ -15,5 +15,5 @@ class Source(ABC):
         pass
 
     @abstractmethod
-    def fetch_shows(self) -> list[ShowDetails]:
+    def fetch_shows(self, db: Session) -> list[ShowDetails]:
         pass

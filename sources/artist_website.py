@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.crud import get_or_create_artist, update_artist
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
-from common.dataclasses import ShowDetails, Url
+from common.dataclasses import AgentDependency, ShowDetails, Url
 from sources import Source
 from tools.web import fetch_web_content, page_hash_has_changed
 
@@ -38,8 +38,10 @@ class ArtistWebsiteSource(Source):
 
         self._base_url = url
 
+    # AI? Now that we send the `db` as arg, `resolve` is useless? Is this an
+    # anti-pattern?
     @override
-    def fetch_shows(self) -> list[ShowDetails]:
+    def fetch_shows(self, db: Session) -> list[ShowDetails]:
         show_extractor_agent = Agent(
             LLM_MODEL_NAME,
             # TODO: I might actually decide to _not_ extract a year if the year is not
@@ -58,7 +60,7 @@ class ArtistWebsiteSource(Source):
                 Before fetching content, you will use the `page_hash_has_changed` tool
                 to check if the content of the page has changed since the last time it
                 was fetched. If the content has not changed, you can skip fetching the
-                content and parsing it. If you don't have any new page to parse, you can
+                content. If you don't have any new page to parse, you can
                 return an empty list.
 
                 The `source_url` field of the output should be the URL of the page where
@@ -80,8 +82,11 @@ class ArtistWebsiteSource(Source):
             # TODO: add a hash of the website so we only parse when updates are detected
             tools=[fetch_web_content, page_hash_has_changed],
             output_type=list[ShowDetails],
+            deps_type=AgentDependency,
         )
-        return show_extractor_agent.run_sync(self.artist_name).output
+        return show_extractor_agent.run_sync(
+            self.artist_name, deps=AgentDependency(db=db)
+        ).output
 
 
 def find_artist_website(artist_name: str) -> str:
