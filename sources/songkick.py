@@ -8,9 +8,9 @@ from sqlalchemy.orm import Session
 from app.crud import get_or_create_artist, update_artist
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
-from common.dataclasses import ShowDetails, Url
+from common.dataclasses import AgentDependency, ShowDetails, Url
 from sources import Source
-from tools.web import fetch_web_content
+from tools.web import fetch_web_content, page_hash_has_changed
 
 
 class SongkickSource(Source):
@@ -33,7 +33,7 @@ class SongkickSource(Source):
         self._base_url = url
 
     @override
-    def fetch_shows(self) -> list[ShowDetails]:
+    def fetch_shows(self, db: Session) -> list[ShowDetails]:
         # TODO: there's probably a way to abstract this...
         show_extractor_agent = Agent(
             LLM_MODEL_NAME,
@@ -44,6 +44,12 @@ class SongkickSource(Source):
 
                 The artist's Songkick page is {self.base_url}. You can fetch the
                 content of any page of the website using the provided tool.
+
+                Before fetching content, you will use the `page_hash_has_changed` tool
+                to check if the content of the page has changed since the last time it
+                was fetched. If the content has not changed, you can skip fetching the
+                content. If you don't have any new page to parse, you can
+                return an empty list.
 
                 The `source_url` field of the output should be the URL of the page where
                 you found the show details.
@@ -62,10 +68,13 @@ class SongkickSource(Source):
                 If you cannot find any show date, return an empty list.
                 """,
             # TODO: add a hash of the website so we only parse when updates are detected
-            tools=[fetch_web_content],
+            tools=[fetch_web_content, page_hash_has_changed],
             output_type=list[ShowDetails],
+            deps_type=AgentDependency,
         )
-        return show_extractor_agent.run_sync(self.artist_name).output
+        return show_extractor_agent.run_sync(
+            self.artist_name, deps=AgentDependency(db=db)
+        ).output
 
 
 def find_songkick_url(artist_name: str) -> str | None:

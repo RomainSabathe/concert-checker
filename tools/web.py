@@ -42,7 +42,6 @@ async def page_hash_has_changed(ctx: RunContext[AgentDependency], url: str) -> b
     Returns:
         True if the hash has changed, False otherwise.
     """
-    # TODO: continue with the run context..
     db = ctx.deps.db
     current_time = datetime.today()
 
@@ -60,7 +59,4 @@ async def page_hash_has_changed(ctx: RunContext[AgentDependency], url: str) -> b
         page_cache.content_hash = current_hash
         page_cache.last_updated_at = current_time
 
-    # AI? This is really bad I presume. This was supposed to ok but we were initially
-    # just supposed to read the cache/db, but now we're writing to it...
-    db.commit()
     return hash_has_changed
