@@ -60,7 +60,7 @@ def run_container() -> int:
             "-v",
             f"{cwd}:/code:z",
             "-v",
-            "$HOME/.logfire:/root/.logfire:z",
+            f"{Path.home()}/.logfire:/root/.logfire:z",
             "-e",
             f"OPENAI_API_KEY={openai_key}",
             IMAGE_NAME,
