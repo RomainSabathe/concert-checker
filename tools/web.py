@@ -25,6 +25,8 @@ async def fetch_web_content(url: str) -> str:
         return result.markdown
 
 
+# TODO: look into this again. It doesn't work for Songkick pages for instance. I should
+# probably use a subset of the page or somethnig...
 async def page_hash_has_changed(ctx: RunContext[AgentDependency], url: str) -> bool:
     """Check if the hash of the content of a web page has changed since the last check.
 

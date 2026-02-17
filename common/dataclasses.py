@@ -29,5 +29,14 @@ class ShowDetails:
 
 
 @dataclass
+class EmailContent:
+    subject: str
+    from_addr: str
+    to_addr: str
+    date: str
+    body: str
+
+
+@dataclass
 class AgentDependency:
     db: Session
