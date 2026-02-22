@@ -25,6 +25,8 @@ class ArtistWebsiteSource(ArtistBoundSource):
             raise ValueError("Base URL not resolved yet. Please call resolve() first.")
         return self._base_url
 
+    # TODO: is this still really necessary? Given `fetch_shows` now has access to the
+    # db...
     @override
     def resolve(self, db: Session):
         # TODO: add docstring
