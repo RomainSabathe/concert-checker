@@ -1,11 +1,11 @@
 import imaplib
-import logging
 from email import message_from_bytes
 from email.header import decode_header
 from email.message import Message
 from typing import cast
 
 import html2text
+import logfire
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 
 from common.constants import (
@@ -16,8 +16,6 @@ from common.constants import (
     IMAP_USER,
 )
 from common.dataclasses import EmailContent
-
-logger = logging.getLogger(__name__)
 
 
 def _decode_header_value(value: str) -> str:
@@ -88,9 +86,10 @@ def fetch_unread_emails() -> list[EmailContent]:
     """
     results: list[EmailContent] = []
     md_generator = DefaultMarkdownGenerator()
+    logfire.info("Reading emails")
 
     if not IMAP_TO_ADDRESSES:
-        logger.warning("No IMAP_TO_ADDRESSES configured — skipping email fetch")
+        logfire.warning("No IMAP_TO_ADDRESSES configured — skipping email fetch")
         return results
 
     with imaplib.IMAP4_SSL(IMAP_HOST) as imap:
@@ -99,9 +98,9 @@ def fetch_unread_emails() -> list[EmailContent]:
         for mailbox in IMAP_MAILBOXES:
             select_status, _ = imap.select(mailbox, readonly=False)
             if select_status != "OK":
-                logger.warning(
-                    "Could not select mailbox %r — check IMAP_MAILBOXES config",
-                    mailbox,
+                logfire.warning(
+                    "Could not select mailbox {mailbox!r} — check IMAP_MAILBOXES config",
+                    mailbox=mailbox,
                 )
                 continue
 
@@ -112,23 +111,23 @@ def fetch_unread_emails() -> list[EmailContent]:
                 status, message_ids = imap.search(None, "UNSEEN", f'TO "{to_address}"')
                 ids_bytes = cast(bytes, message_ids[0])
                 if status != "OK" or not ids_bytes:
-                    logger.debug("No unseen emails for %s in %s", to_address, mailbox)
+                    logfire.debug("No unseen emails for {to_address} in {mailbox}", to_address=to_address, mailbox=mailbox)
                     continue
 
                 msg_count = len(ids_bytes.split())
-                logger.info(
-                    "Found %d unseen email(s) for %s in %s",
-                    msg_count,
-                    to_address,
-                    mailbox,
+                logfire.info(
+                    "Found {msg_count} unseen email(s) for {to_address} in {mailbox}",
+                    msg_count=msg_count,
+                    to_address=to_address,
+                    mailbox=mailbox,
                 )
 
                 for msg_id_bytes in ids_bytes.split():
                     msg_id = msg_id_bytes.decode()
                     status, msg_data = imap.fetch(msg_id, "(RFC822)")
                     if status != "OK" or not msg_data:
-                        logger.warning(
-                            "Failed to fetch message %s in %s", msg_id, mailbox
+                        logfire.warning(
+                            "Failed to fetch message {msg_id} in {mailbox}", msg_id=msg_id, mailbox=mailbox
                         )
                         continue
 
