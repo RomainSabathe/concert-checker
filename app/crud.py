@@ -103,3 +103,7 @@ def get_or_create_page_cache(
         db.flush()
 
     return page_cache
+
+
+def search_artists_by_name(db: Session, name_query: str) -> list[Artist]:
+    return db.query(Artist).filter(Artist.name.ilike(f"%{name_query}%")).all()
