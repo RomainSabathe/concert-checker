@@ -10,11 +10,11 @@ from app.crud import get_or_create_artist, update_artist
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
 from common.dataclasses import AgentDependency, ShowDetails, Url
-from sources import Source
+from sources import ArtistBoundSource
 from tools.web import fetch_web_content, page_hash_has_changed
 
 
-class ArtistWebsiteSource(Source):
+class ArtistWebsiteSource(ArtistBoundSource):
     def __init__(self, artist_name: str, *args, **kwargs):
         super().__init__(artist_name, *args, **kwargs)
 

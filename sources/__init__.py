@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from common.dataclasses import ShowDetails
 
 
-class Source(ABC):
+class ArtistBoundSource(ABC):
     def __init__(self, artist_name: str):
         self.artist_name: str = artist_name
 
