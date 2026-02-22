@@ -29,6 +29,12 @@ class ShowDetails:
 
 
 @dataclass
+class ArtistShows:
+    artist_name: str
+    shows: list[ShowDetails]
+
+
+@dataclass
 class EmailContent:
     subject: str
     from_addr: str

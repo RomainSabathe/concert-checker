@@ -1,4 +1,3 @@
-import datetime
 from datetime import datetime
 from typing import override
 
@@ -9,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.crud import get_or_create_artist, update_artist
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
-from common.dataclasses import AgentDependency, ShowDetails, Url
+from common.dataclasses import AgentDependency, ArtistShows, ShowDetails, Url
 from sources import ArtistBoundSource
 from tools.web import fetch_web_content, page_hash_has_changed
 
@@ -41,7 +40,7 @@ class ArtistWebsiteSource(ArtistBoundSource):
     # AI? Now that we send the `db` as arg, `resolve` is useless? Is this an
     # anti-pattern?
     @override
-    def fetch_shows(self, db: Session) -> list[ShowDetails]:
+    def fetch_shows(self, db: Session) -> list[ArtistShows]:
         show_extractor_agent = Agent(
             LLM_MODEL_NAME,
             # TODO: I might actually decide to _not_ extract a year if the year is not
@@ -84,9 +83,10 @@ class ArtistWebsiteSource(ArtistBoundSource):
             output_type=list[ShowDetails],
             deps_type=AgentDependency,
         )
-        return show_extractor_agent.run_sync(
+        shows = show_extractor_agent.run_sync(
             self.artist_name, deps=AgentDependency(db=db)
         ).output
+        return [ArtistShows(artist_name=self.artist_name, shows=shows)]
 
 
 def find_artist_website(artist_name: str) -> str:

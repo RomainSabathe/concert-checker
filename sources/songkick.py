@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.crud import get_or_create_artist, update_artist
 from app.schemas import ArtistCreate, ArtistUpdate
 from common.constants import LLM_MODEL_NAME
-from common.dataclasses import AgentDependency, ShowDetails, Url
+from common.dataclasses import AgentDependency, ArtistShows, ShowDetails, Url
 from sources import ArtistBoundSource
 from tools.web import fetch_web_content, page_hash_has_changed
 
@@ -33,7 +33,7 @@ class SongkickSource(ArtistBoundSource):
         self._base_url = url
 
     @override
-    def fetch_shows(self, db: Session) -> list[ShowDetails]:
+    def fetch_shows(self, db: Session) -> list[ArtistShows]:
         # TODO: there's probably a way to abstract this...
         show_extractor_agent = Agent(
             LLM_MODEL_NAME,
@@ -72,9 +72,10 @@ class SongkickSource(ArtistBoundSource):
             output_type=list[ShowDetails],
             deps_type=AgentDependency,
         )
-        return show_extractor_agent.run_sync(
+        shows = show_extractor_agent.run_sync(
             self.artist_name, deps=AgentDependency(db=db)
         ).output
+        return [ArtistShows(artist_name=self.artist_name, shows=shows)]
 
 
 def find_songkick_url(artist_name: str) -> str | None:
