@@ -26,7 +26,6 @@ def main():
     # TODO: add logging
     # TODO: switch to async
     for source_class in [ArtistWebsiteSource, SongkickSource, EmailSource]:
-        # AI? what about this?
         if issubclass(source_class, ArtistBoundSource):
             source = source_class(artist_name)
             source.resolve(db)

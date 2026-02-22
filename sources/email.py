@@ -60,7 +60,6 @@ class EmailSource(Source):
 
                 If the emails don't announce any shows, return an empty list.
                 """,
-            # AI! run basedpyright. what's wrong there?
             tools=[list_artists_in_db, add_artist_to_db, fetch_web_content],
             output_type=ArtistShows,
             deps_type=AgentDependency,
@@ -69,7 +68,7 @@ class EmailSource(Source):
         # TODO: async
         all_artist_shows: list[ArtistShows] = []
         for email in emails:
-            email_text = f"Subject: {email.subject}\nDate: {email.date}\n\n{email.body}"
+            email_text = f"Subject: {email.subject}\nFrom: {email.from_addr}\nDate: {email.date}\n\n{email.body}"
             artist_shows = show_extractor_agent.run_sync(
                 email_text, deps=AgentDependency(db=db)
             ).output
