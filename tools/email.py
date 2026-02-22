@@ -6,6 +6,7 @@ from email.message import Message
 from typing import cast
 
 import html2text
+from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 
 from common.constants import (
     IMAP_HOST,
@@ -86,6 +87,7 @@ def fetch_unread_emails() -> list[EmailContent]:
     Returns a list of EmailContent with the extracted body text.
     """
     results: list[EmailContent] = []
+    md_generator = DefaultMarkdownGenerator()
 
     if not IMAP_TO_ADDRESSES:
         logger.warning("No IMAP_TO_ADDRESSES configured — skipping email fetch")
@@ -138,13 +140,15 @@ def fetch_unread_emails() -> list[EmailContent]:
                     msg = message_from_bytes(raw_bytes)
 
                     # TODO: use crawl4ai to convert to markdown.
+                    body = _extract_body(msg)
+                    body_as_md = md_generator.generate_markdown(body).raw_markdown
                     results.append(
                         EmailContent(
                             subject=_decode_header_value(msg.get("Subject", "")),
                             from_addr=msg.get("From", ""),
                             to_addr=msg.get("To", ""),
                             date=msg.get("Date", ""),
-                            body=_extract_body(msg),
+                            body=body_as_md,
                         )
                     )
                     print(results[-1])
