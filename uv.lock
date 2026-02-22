@@ -507,6 +507,7 @@ dependencies = [
     { name = "logfire" },
     { name = "pydantic-ai" },
     { name = "pydantic-ai-slim", extra = ["duckduckgo", "logfire"] },
+    { name = "python-dotenv" },
     { name = "sqlalchemy" },
 ]
 
@@ -518,6 +519,7 @@ requires-dist = [
     { name = "logfire", specifier = ">=2.8.1" },
     { name = "pydantic-ai", specifier = ">=1.57.0" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire"], specifier = ">=1.57.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "sqlalchemy", specifier = ">=2.0.46" },
 ]
 

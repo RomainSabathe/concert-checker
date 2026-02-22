@@ -11,3 +11,6 @@ wheels/
 
 # Only used for debugging
 concerts.db
+
+# Environment
+.env

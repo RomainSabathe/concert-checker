@@ -7,7 +7,7 @@ from app.crud import get_or_create_artist, get_or_create_concert, get_or_create_
 from app.database import Base, SessionLocal, engine
 from app.schemas import ArtistCreate, ConcertCreate, VenueCreate
 from common.dataclasses import ShowDetails
-from sources.artist_newsletter import ArtistNewsletterSource
+from sources.artist_email import ArtistEmailSource
 from sources.artist_website import ArtistWebsiteSource
 from sources.songkick import SongkickSource
 
@@ -24,7 +24,7 @@ def main():
 
     # TODO: add logging
     # TODO: switch to async
-    for source_class in [ArtistWebsiteSource, SongkickSource, ArtistNewsletterSource]:
+    for source_class in [ArtistWebsiteSource, SongkickSource, ArtistEmailSource]:
         source = source_class(artist_name)
         source.resolve(db)
         shows = source.fetch_shows(db)
