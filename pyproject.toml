@@ -13,4 +13,6 @@ dependencies = [
     "sqlalchemy>=2.0.46",
     "html2text>=2024.2.26",
     "python-dotenv>=1.0.0",
+    "ruff>=0.15.2",
+    "basedpyright>=1.38.1",
 ]
