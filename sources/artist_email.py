@@ -4,26 +4,20 @@ from typing import override
 from pydantic_ai import Agent
 from sqlalchemy.orm import Session
 
-from common.constants import EMAIL_DOMAIN, LLM_MODEL_NAME
+from common.constants import LLM_MODEL_NAME
 from common.dataclasses import ShowDetails
-from common.utils import slugify
 from sources import Source
 from tools.email import fetch_unread_emails
 
 
 class ArtistEmailSource(Source):
-    def __init__(self, artist_name: str, *args, **kwargs):
-        super().__init__(artist_name, *args, **kwargs)
-        self.slug = slugify(artist_name)
-        self.email_address = f"{self.slug}@{EMAIL_DOMAIN}"
-
     @override
     def resolve(self, db: Session):
         pass
 
     @override
     def fetch_shows(self, db: Session) -> list[ShowDetails]:
-        emails = fetch_unread_emails(self.email_address)
+        emails = fetch_unread_emails()
         if not emails:
             return []
 
@@ -46,9 +40,8 @@ class ArtistEmailSource(Source):
                 dates without a year, assume they refer to the nearest future occurrence
                 of that date.
 
-                The `source_url` field should be set to
-                "email:{self.email_address}" since these come from emails, not
-                web pages.
+                The `source_url` field should be set to "email" since these
+                come from emails, not web pages.
 
                 If the emails don't announce any shows, return an empty list.
                 """,

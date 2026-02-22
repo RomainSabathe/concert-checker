@@ -10,6 +10,12 @@ To do:
 - ~Add source for when an event has been added? (e.g. "added from songkick")~
   - In practice, we have the "source_url" field.
 - ~Email source.~
+- agent to:
+  - register for artist email (best-case scenario)
+  - otherwise find the url where to do it
+  - check content of emails to detect concert announcements
+  - check whether an artist does have a newsletter, if so, have we subscribed?
+- in the database: a table for sales/presales?
 
 ## Email source setup
 
