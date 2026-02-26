@@ -38,12 +38,12 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /app
 
 # Copy dependency files first for caching
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 
 # Install Python dependencies using uv with cache to a fixed location
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+    uv sync --frozen --no-dev --no-install-project
 
 # Install Playwright browsers (without cache mount so they persist in the image)
 RUN /opt/venv/bin/playwright install chromium && \
@@ -51,6 +51,10 @@ RUN /opt/venv/bin/playwright install chromium && \
 
 # Copy application code
 COPY . .
+
+# Install the project itself (after source is available)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 # Set environment variables
 ENV PATH="/opt/venv/bin:$PATH"

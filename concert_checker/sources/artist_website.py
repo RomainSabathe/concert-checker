@@ -88,7 +88,6 @@ class ArtistWebsiteSource(ArtistBoundSource):
 
                 If you cannot find any show date, return an empty list.
                 """,
-            # TODO: add a hash of the website so we only parse when updates are detected
             tools=[fetch_web_content, page_hash_has_changed],
             output_type=list[ShowDetails],
             deps_type=AgentDependency,

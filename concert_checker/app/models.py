@@ -38,6 +38,7 @@ class Concert(Base):
     source_url: Mapped[str] = (
         mapped_column()
     )  # URL of the page where the show details were found
+    # TODO: add a `date_added` field to know when the show was added to the database.
 
     artist_id: Mapped[int] = mapped_column(ForeignKey("artists.id"))
     venue_id: Mapped[int | None] = mapped_column(ForeignKey("venues.id"))

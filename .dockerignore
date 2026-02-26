@@ -34,6 +34,8 @@ htmlcov/
 
 # Documentation
 *.md
+!README.md
+!CLAUDE.md
 docs/
 
 # Environment files
