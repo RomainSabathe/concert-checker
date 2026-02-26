@@ -64,7 +64,7 @@ ArtistWebsiteShowExtractorAgent = Agent(
         located either on the front page or in dedicated pages (for instance named:
         "Live", "Shows", "Tour", etc.).
 
-        The current date is {datetime.now().date}. If show dates are missing the year
+        The current date is {datetime.now().date()}. If show dates are missing the year
         information, deduce it based on the current date. For instance, if the show date
         is "December 15" and the current date is "June 1, 2024", then the show date
         should be "December 15, 2024" since it is in the future or that happened in the

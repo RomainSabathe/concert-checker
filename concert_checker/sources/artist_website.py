@@ -75,7 +75,7 @@ class ArtistWebsiteSource(ArtistBoundSource):
                 The `source_url` field of the output should be the URL of the page where
                 you found the show details.
 
-                The current date is {datetime.now().date}. Certain artist websites
+                The current date is {datetime.now().date()}. Certain artist websites
                 unfortunately do not include a year in the show dates. And considering
                 that the website might not be up to date, the show date could actually
                 refer to a show in the past. To clarify, you will:

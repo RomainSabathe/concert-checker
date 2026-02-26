@@ -8,7 +8,12 @@ from sqlalchemy.orm import Session
 from concert_checker.app.crud import get_or_create_artist, update_artist
 from concert_checker.app.schemas import ArtistCreate, ArtistUpdate
 from concert_checker.common.constants import LLM_MODEL_NAME
-from concert_checker.common.dataclasses import AgentDependency, ArtistShows, ShowDetails, Url
+from concert_checker.common.dataclasses import (
+    AgentDependency,
+    ArtistShows,
+    ShowDetails,
+    Url,
+)
 from concert_checker.sources import ArtistBoundSource
 from concert_checker.tools.web import fetch_web_content, page_hash_has_changed
 
@@ -54,7 +59,7 @@ class SongkickSource(ArtistBoundSource):
                 The `source_url` field of the output should be the URL of the page where
                 you found the show details.
 
-                The current date is {datetime.now().date}. Songkick organizes the page
+                The current date is {datetime.now().date()}. Songkick organizes the page
                 into "Upcoming concerts" and "Past concerts".
 
                 For upcoming concerts: if show dates are missing the year information,
