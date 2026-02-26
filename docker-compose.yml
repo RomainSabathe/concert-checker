@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      UVICORN_HOST: "0.0.0.0"
+      DATABASE_URL: "sqlite:////data/concerts.db"
+    env_file: .env
+    volumes:
+      - concert-data:/data
+    restart: unless-stopped
+
+  scraper:
+    build: .
+    command: ["sh", "scripts/scraper-loop.sh"]
+    environment:
+      DATABASE_URL: "sqlite:////data/concerts.db"
+      SCRAPE_INTERVAL: "21600"
+    env_file: .env
+    volumes:
+      - concert-data:/data
+    restart: unless-stopped
+    depends_on:
+      - web
+
+volumes:
+  concert-data:

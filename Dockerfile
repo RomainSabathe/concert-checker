@@ -61,4 +61,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 
 # Default command
-CMD ["python", "main.py"]
+CMD ["concert-admin"]

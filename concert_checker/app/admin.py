@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from sqladmin import Admin, ModelView
@@ -97,4 +99,5 @@ admin.add_view(PageCacheAdmin)
 def serve():
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    host = os.environ.get("UVICORN_HOST", "127.0.0.1")
+    uvicorn.run(app, host=host, port=8000)
