@@ -4,9 +4,9 @@ from datetime import datetime
 from crawl4ai import AsyncWebCrawler
 from pydantic_ai import RunContext
 
-from app.crud import get_or_create_page_cache
-from app.schemas import PageCacheCreate
-from common.dataclasses import AgentDependency
+from concert_checker.app.crud import get_or_create_page_cache
+from concert_checker.app.schemas import PageCacheCreate
+from concert_checker.common.dataclasses import AgentDependency
 
 
 async def fetch_web_content(url: str) -> str:

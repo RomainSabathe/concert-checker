@@ -8,14 +8,14 @@ import html2text
 import logfire
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 
-from common.constants import (
+from concert_checker.common.constants import (
     IMAP_HOST,
     IMAP_MAILBOXES,
     IMAP_PASSWORD,
     IMAP_TO_ADDRESSES,
     IMAP_USER,
 )
-from common.dataclasses import EmailContent
+from concert_checker.common.dataclasses import EmailContent
 
 
 def _decode_header_value(value: str) -> str:

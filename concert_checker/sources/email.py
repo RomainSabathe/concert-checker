@@ -4,12 +4,12 @@ from typing import override
 from pydantic_ai import Agent
 from sqlalchemy.orm import Session
 
-from common.constants import LLM_MODEL_NAME
-from common.dataclasses import AgentDependency, ArtistShows
-from sources import Source
-from tools.db import add_artist_to_db, list_artists_in_db
-from tools.email import fetch_unread_emails
-from tools.web import fetch_web_content
+from concert_checker.common.constants import LLM_MODEL_NAME
+from concert_checker.common.dataclasses import AgentDependency, ArtistShows
+from concert_checker.sources import Source
+from concert_checker.tools.db import add_artist_to_db, list_artists_in_db
+from concert_checker.tools.email import fetch_unread_emails
+from concert_checker.tools.web import fetch_web_content
 
 
 class EmailSource(Source):

@@ -57,6 +57,8 @@ def run_container() -> int:
             "run",
             "--rm",
             "-it",  # Changed to -it for interactive + TTY
+            "--network",
+            "host",
             "-v",
             f"{cwd}:/code:z",
             "-v",

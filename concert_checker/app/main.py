@@ -1,5 +1,5 @@
-from app.database import Base, SessionLocal, engine
-from app.models import Artist, Concert, Venue  # noqa: F401
+from concert_checker.app.database import Base, SessionLocal, engine
+from concert_checker.app.models import Artist, Concert, Venue  # noqa: F401
 
 Base.metadata.create_all(bind=engine)
 

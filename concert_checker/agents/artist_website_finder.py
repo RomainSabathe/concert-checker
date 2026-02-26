@@ -4,8 +4,8 @@ from datetime import date, datetime
 from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 
-from common.constants import LLM_MODEL_NAME
-from tools.web import fetch_web_content
+from concert_checker.common.constants import LLM_MODEL_NAME
+from concert_checker.tools.web import fetch_web_content
 
 
 @dataclass

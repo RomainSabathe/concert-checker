@@ -1,7 +1,7 @@
 import pytest
 
-from common.constants import IMAP_PASSWORD, IMAP_TO_ADDRESSES, IMAP_USER
-from tools.email import fetch_unread_emails
+from concert_checker.common.constants import IMAP_PASSWORD, IMAP_TO_ADDRESSES, IMAP_USER
+from concert_checker.tools.email import fetch_unread_emails
 
 _missing_creds = not IMAP_USER or not IMAP_PASSWORD or not IMAP_TO_ADDRESSES
 

@@ -1,8 +1,8 @@
 from pydantic_ai import RunContext
 
-from app.crud import get_or_create_artist, search_artists_by_name
-from app.schemas import ArtistCreate
-from common.dataclasses import AgentDependency
+from concert_checker.app.crud import get_or_create_artist, search_artists_by_name
+from concert_checker.app.schemas import ArtistCreate
+from concert_checker.common.dataclasses import AgentDependency
 
 
 async def list_artists_in_db(

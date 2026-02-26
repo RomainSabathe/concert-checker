@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from app.models import Artist, Concert, PageCache, Venue
-from app.schemas import (
+from concert_checker.app.models import Artist, Concert, PageCache, Venue
+from concert_checker.app.schemas import (
     ArtistCreate,
     ArtistUpdate,
     ConcertCreate,

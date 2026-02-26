@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from sqladmin import Admin, ModelView
 
-from app.database import Base, engine
-from app.models import Artist, Concert, PageCache, Venue
+from concert_checker.app.database import Base, engine
+from concert_checker.app.models import Artist, Concert, PageCache, Venue
 
 Base.metadata.create_all(bind=engine)
 

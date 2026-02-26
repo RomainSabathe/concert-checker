@@ -18,8 +18,8 @@ dependencies = [
 ]
 
 [project.scripts]
-concert-checker = "main:main"
-concert-admin = "app.admin:serve"
+concert-checker = "concert_checker.main:main"
+concert-admin = "concert_checker.app.admin:serve"
 
 [dependency-groups]
 dev = [
@@ -32,12 +32,6 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["app", "sources", "tools", "common", "agents", "utils"]
-
-[tool.hatch.build.targets.wheel.force-include]
-"main.py" = "main.py"
 
 [tool.pytest.ini_options]
 markers = ["integration: tests that hit real external services (IMAP, APIs)"]

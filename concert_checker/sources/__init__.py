@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.orm import Session
 
-from common.dataclasses import ArtistShows
+from concert_checker.common.dataclasses import ArtistShows
 
 
 class Source(ABC):

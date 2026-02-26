@@ -5,12 +5,12 @@ from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from sqlalchemy.orm import Session
 
-from app.crud import get_or_create_artist, update_artist
-from app.schemas import ArtistCreate, ArtistUpdate
-from common.constants import LLM_MODEL_NAME
-from common.dataclasses import AgentDependency, ArtistShows, ShowDetails, Url
-from sources import ArtistBoundSource
-from tools.web import fetch_web_content, page_hash_has_changed
+from concert_checker.app.crud import get_or_create_artist, update_artist
+from concert_checker.app.schemas import ArtistCreate, ArtistUpdate
+from concert_checker.common.constants import LLM_MODEL_NAME
+from concert_checker.common.dataclasses import AgentDependency, ArtistShows, ShowDetails, Url
+from concert_checker.sources import ArtistBoundSource
+from concert_checker.tools.web import fetch_web_content, page_hash_has_changed
 
 
 class SongkickSource(ArtistBoundSource):

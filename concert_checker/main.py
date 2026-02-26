@@ -3,14 +3,14 @@ from datetime import date
 import logfire
 from sqlalchemy.orm import Session
 
-from app.crud import get_or_create_artist, get_or_create_concert, get_or_create_venue
-from app.database import Base, SessionLocal, engine
-from app.schemas import ArtistCreate, ConcertCreate, VenueCreate
-from common.dataclasses import ArtistShows
-from sources import ArtistBoundSource
-from sources.artist_website import ArtistWebsiteSource
-from sources.email import EmailSource
-from sources.songkick import SongkickSource
+from concert_checker.app.crud import get_or_create_artist, get_or_create_concert, get_or_create_venue
+from concert_checker.app.database import Base, SessionLocal, engine
+from concert_checker.app.schemas import ArtistCreate, ConcertCreate, VenueCreate
+from concert_checker.common.dataclasses import ArtistShows
+from concert_checker.sources import ArtistBoundSource
+from concert_checker.sources.artist_website import ArtistWebsiteSource
+from concert_checker.sources.email import EmailSource
+from concert_checker.sources.songkick import SongkickSource
 
 logfire.configure()
 logfire.instrument_pydantic_ai()

@@ -5,12 +5,17 @@ from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from sqlalchemy.orm import Session
 
-from app.crud import get_or_create_artist, update_artist
-from app.schemas import ArtistCreate, ArtistUpdate
-from common.constants import LLM_MODEL_NAME
-from common.dataclasses import AgentDependency, ArtistShows, ShowDetails, Url
-from sources import ArtistBoundSource
-from tools.web import fetch_web_content, page_hash_has_changed
+from concert_checker.app.crud import get_or_create_artist, update_artist
+from concert_checker.app.schemas import ArtistCreate, ArtistUpdate
+from concert_checker.common.constants import LLM_MODEL_NAME
+from concert_checker.common.dataclasses import (
+    AgentDependency,
+    ArtistShows,
+    ShowDetails,
+    Url,
+)
+from concert_checker.sources import ArtistBoundSource
+from concert_checker.tools.web import fetch_web_content, page_hash_has_changed
 
 
 class ArtistWebsiteSource(ArtistBoundSource):
@@ -48,6 +53,9 @@ class ArtistWebsiteSource(ArtistBoundSource):
             # TODO: I might actually decide to _not_ extract a year if the year is not
             # available, and actually leave this logic for deterministic
             # post-processing.
+            # TODO: The way I'm using `page_hash_has_changed` is probably introducing a
+            # bug. If the main page hasn't changed, but the "tour" page has changed,
+            # then likely the agent will just skip it altogether. That's a big problem.
             system_prompt=f"""
                 You are a helpful assistant that navigates the official website of the
                 artist "{self.artist_name}" and extracts the list of show dates. Your task is
